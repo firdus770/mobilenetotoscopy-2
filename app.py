@@ -13,19 +13,27 @@ from torchvision import models, transforms
 
 import streamlit as st
 
-# pytorch-grad-cam (NOT torchcam)
+# pytorch-grad-cam 
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.model_targets import ClassifierOutputTarget
 from pytorch_grad_cam.utils.image import show_cam_on_image
 
-# -----------------------------
-# Config
-# -----------------------------
-DEFAULT_WEIGHTS = os.environ.get("WEIGHTS_PATH", "weights/best.pt")
+# ---- Config (keep this) ----
 CLASSES_JSON = os.environ.get("CLASSES_JSON", "classes.json")
 IMG_SIZE = 224
 MEAN = [0.485, 0.456, 0.406]
 STD  = [0.229, 0.224, 0.225]
+
+# ---- Default weights resolver (PUT THIS RIGHT AFTER THE CONFIG ABOVE) ----
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_WEIGHTS_ENV = os.environ.get("WEIGHTS_PATH", "").strip()
+CANDIDATES = [
+    DEFAULT_WEIGHTS_ENV,
+    os.path.join(APP_DIR, "weights", "best.pt"),
+    os.path.join(APP_DIR, "runs", "classify", "mobilenet_v3_large", "weights", "best.pt"),
+    os.path.join(APP_DIR, "..", "weights", "best.pt"),
+]
+RESOLVED_DEFAULT_WEIGHTS = next((p for p in CANDIDATES if p and os.path.exists(p)), "weights/best.pt")
 
 def preprocess() -> transforms.Compose:
     return transforms.Compose([
@@ -187,3 +195,4 @@ if uploads:
                 st.image(cam_img, caption=f"Grad-CAM ({cam_for})", use_column_width=True)
             else:
                 st.image(preview_img, use_column_width=True)
+
