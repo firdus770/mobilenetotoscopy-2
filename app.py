@@ -130,9 +130,10 @@ def load_model_and_classes(weights_path: str):
     return model, classes, device
 
 
+# Note the leading underscore so Streamlit does not try to hash the model
 @st.cache_resource(show_spinner=False)
-def get_cam(model: nn.Module):
-    return GradCAM(model=model, target_layers=[get_last_conv_layer(model)])
+def get_cam(_model: nn.Module):
+    return GradCAM(model=_model, target_layers=[get_last_conv_layer(_model)])
 
 
 def predict_and_cam(img_pil: Image.Image,
