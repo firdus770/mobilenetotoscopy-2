@@ -40,7 +40,7 @@ CANDIDATES = [
     os.path.join(APP_DIR, "runs", "classify", "mobilenet_v3_large", "weights", "best.pt"),
     os.path.join(APP_DIR, "..", "weights", "best.pt"),
 ]
-RESOLVED_DEFAULT_WEIGHTS = next((p for p in CANDIDATES if p and os.path.exists(p)), "weights/best.pt")
+RESOLVED_DEFAULT_WEIGHTS = next((p for p in CANDIDATES if p and os.path.exists(p)), "best.pt")
 DEFAULT_WEIGHTS = RESOLVED_DEFAULT_WEIGHTS  # alias used by the sidebar
 
 
@@ -236,4 +236,5 @@ if uploads:
                 st.image(cam_img, caption=f"Grad-CAM ({cam_for})", use_column_width=True)
             else:
                 st.image(preview_img, use_column_width=True)
+
 
